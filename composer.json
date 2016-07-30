@@ -1,0 +1,49 @@
+{
+    "name": "cheppers/lint-report",
+    "description": "Generate reports from lint results",
+    "license": "GPL-2.0+",
+    "version": "0.0.1",
+    "config": {
+        "bin-dir": "bin"
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "require": {
+        "symfony/console": "^3.1",
+        "symfony/filesystem": "^3.1"
+    },
+    "require-dev": {
+        "codeception/codeception": "^2.2",
+        "squizlabs/php_codesniffer": "2.6.2",
+        "cheppers/git-hooks": "^0.0.8",
+        "satooshi/php-coveralls": "^1.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Cheppers\\LintReport\\": "src/"
+        }
+    },
+    "scripts": {
+        "post-install-cmd": [
+            "@deploy-git-hooks"
+        ],
+        "post-update-cmd": [
+            "@deploy-git-hooks"
+        ],
+        "lint": [
+            "@lint-phpcs-psr2",
+            "@lint-composer-lock"
+        ],
+        "lint-phpcs-psr2": "phpcs --colors --standard=PSR2 --ignore='tests/_output/,tests/_support/UnitTester.php' src/ tests/",
+        "lint-composer-lock": "composer validate",
+        "test": [
+            "@test-unit"
+        ],
+        "test-unit": "codecept run unit --coverage --coverage-xml --coverage-html=html",
+        "deploy-git-hooks": "\\Cheppers\\GitHooks\\Main::deploy",
+        "githook-pre-commit": [
+            "@lint",
+            "@test"
+        ]
+    }
+}

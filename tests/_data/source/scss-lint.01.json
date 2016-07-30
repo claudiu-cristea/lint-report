@@ -1,0 +1,64 @@
+{
+    "/foo/file-01.php": [
+        {
+            "reason": "message-01",
+            "linter": "source-01",
+            "severity": "error",
+            "line": 1,
+            "column": 2,
+            "length": 42
+        },
+        {
+            "reason": "message-02",
+            "linter": "source-02",
+            "severity": "warning",
+            "line": 3,
+            "column": 4,
+            "length": 43
+        }
+    ],
+    "file-02.php": [
+        {
+            "reason": "message-03",
+            "linter": "source-03",
+            "severity": "error",
+            "line": 5,
+            "column": 6,
+            "length": 42
+        },
+        {
+            "reason": "message-04",
+            "linter": "source-04",
+            "severity": "error",
+            "line": 7,
+            "column": 8,
+            "length": 43
+        },
+        {
+            "reason": "message-05",
+            "linter": "source-05",
+            "severity": "error",
+            "line": 9,
+            "column": 10,
+            "length": 43
+        }
+    ],
+    "file-03.php": [
+        {
+            "reason": "message-06",
+            "linter": "source-06",
+            "severity": "error",
+            "line": 11,
+            "column": 12,
+            "length": 42
+        },
+        {
+            "reason": "message-07",
+            "linter": "source-07",
+            "severity": "error",
+            "line": 13,
+            "column": 14,
+            "length": 43
+        }
+    ]
+}

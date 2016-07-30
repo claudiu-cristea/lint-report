@@ -1,0 +1,12 @@
+/foo/file-01.php
+error   | source-01 | 1 | 2 | message-01
+warning | source-02 | 3 | 4 | message-02
+
+file-02.php
+error | source-03 | 5 |  6 | message-03
+error | source-04 | 7 |  8 | message-04
+error | source-05 | 9 | 10 | message-05
+
+file-03.php
+error | source-06 | 11 | 12 | message-06
+error | source-07 | 13 | 14 | message-07
