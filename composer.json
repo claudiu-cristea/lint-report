@@ -2,15 +2,14 @@
     "name": "cheppers/lint-report",
     "description": "Generate reports from lint results",
     "license": "GPL-2.0+",
-    "version": "0.0.1",
     "config": {
         "bin-dir": "bin"
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {
-        "symfony/console": "^3.1",
-        "symfony/filesystem": "^3.1"
+        "symfony/console": "^2.8",
+        "symfony/filesystem": "^2.8"
     },
     "require-dev": {
         "codeception/codeception": "^2.2",
@@ -39,7 +38,7 @@
         "test": [
             "@test-unit"
         ],
-        "test-unit": "codecept run unit --coverage --coverage-xml --coverage-html=html",
+        "test-unit": "codecept --coverage --coverage-xml --coverage-html=html run unit",
         "deploy-git-hooks": "\\Cheppers\\GitHooks\\Main::deploy",
         "githook-pre-commit": [
             "@lint",
