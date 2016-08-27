@@ -22,10 +22,3 @@ coverage:
     whitelist:
         include:
             - 'src/*'
-#        exclude:
-#            - app/cache/*
-#    blacklist:
-#        include:
-#            - app/controllers/*
-#        exclude:
-#            - app/cache/CacheProvider.php
