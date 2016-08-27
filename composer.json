@@ -36,9 +36,9 @@
         "lint-phpcs-psr2": "phpcs --colors --standard=PSR2 --ignore='tests/_output/,tests/_support/UnitTester.php' src/ tests/",
         "lint-composer-lock": "composer validate",
         "test": [
-            "@test-unit"
+            "@test-codeception"
         ],
-        "test-unit": "codecept --coverage --coverage-xml --coverage-html=html run unit",
+        "test-codeception": "codecept --verbose --coverage --coverage-xml=coverage.xml --coverage-html=html run",
         "deploy-git-hooks": "\\Cheppers\\GitHooks\\Main::deploy",
         "githook-pre-commit": [
             "@lint",

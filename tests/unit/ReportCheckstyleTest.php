@@ -50,4 +50,39 @@ class ReportCheckstyleTest extends ReportTestBase
             ->generate($source, $destination);
         static::assertEquals($expected, $destination->fetch());
     }
+
+    public function testSetFilePathStyle()
+    {
+        $reporter = new ReportCheckstyle();
+        try {
+            $reporter->setFilePathStyle('invalid');
+            $this->fail('Expected exception is missing.');
+        } catch (\InvalidArgumentException $e) {
+            $this->assertTrue(true, 'Invalid value cannot be applied.');
+        }
+    }
+
+    public function testSetColumnMapping()
+    {
+        $reporter = new ReportCheckstyle();
+
+        $reporter->setColumnMapping('phpcs');
+        $this->assertEquals(
+            ReportCheckstyle::$columnMappings['phpcs'],
+            $reporter->getColumnMapping()
+        );
+
+        $reporter->setColumnMapping('');
+        $this->assertEquals(
+            ReportCheckstyle::$columnMappings['default'],
+            $reporter->getColumnMapping()
+        );
+
+        try {
+            $reporter->setColumnMapping('invalid');
+            $this->fail('Expected exception is missing.');
+        } catch (\InvalidArgumentException $e) {
+            $this->assertTrue(true, 'Invalid value cannot be applied.');
+        }
+    }
 }
