@@ -22,7 +22,7 @@ script:
   - 'composer run test'
 
 after_success:
-  - 'travis_retry php ./bin/coveralls'
+  - 'bash <(curl -s https://codecov.io/bash)'
 
 notifications:
   email: false
