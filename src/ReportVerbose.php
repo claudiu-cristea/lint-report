@@ -2,6 +2,9 @@
 
 namespace Cheppers\LintReport;
 
+use Symfony\Component\Console\Helper\Table;
+use Symfony\Component\Console\Helper\TableStyle;
+
 /**
  * Class ReportVerbose.
  *
@@ -40,35 +43,43 @@ class ReportVerbose extends ReportBase
                 $this->normalizeFilePath($file_name)
             ));
 
+            $table = new Table($this->destination);
+            $table->setHeaders([
+                'Severity',
+                'Source',
+                'Line',
+                'Column',
+                'Message',
+            ]);
+            $tableStyleAlignRight = new TableStyle();
+            $tableStyleAlignRight->setPadType(STR_PAD_LEFT);
+            $table
+                ->setColumnStyle(2, $tableStyleAlignRight)
+                ->setColumnStyle(3, $tableStyleAlignRight);
             /** @var array $error */
             foreach ($errors as $error) {
                 $error += $columns;
-
-                $line = [];
+                $row = $columns;
                 foreach (array_keys($columns) as $dst) {
                     $src = $this->columnMapping[$dst];
                     switch ($dst) {
                         case 'severity':
-                            $line[] = str_pad(strtolower($error[$src]), $report['widths'][$dst], ' ', STR_PAD_RIGHT);
+                            $row[$dst] = strtolower($error[$src]);
                             break;
 
                         case 'source':
-                            $line[] = str_pad($error[$src], $report['widths'][$dst], ' ', STR_PAD_RIGHT);
-                            break;
-
+                        case 'message':
                         case 'line':
                         case 'column':
-                            $line[] = str_pad($error[$src], $report['widths'][$dst], ' ', STR_PAD_LEFT);
-                            break;
-
-                        case 'message':
-                            $line [] = $error[$src];
+                            $row[$dst] = $error[$src];
                             break;
                     }
                 }
 
-                $this->destination->writeln(implode(' | ', $line));
+                $table->addRow($row);
             }
+
+            $table->render();
 
             if ($i !== count($files) - 1) {
                 $this->destination->writeln('');

@@ -2,6 +2,9 @@
 
 namespace Cheppers\LintReport;
 
+use Symfony\Component\Console\Helper\Table;
+use Symfony\Component\Console\Helper\TableStyle;
+
 /**
  * Class ReportStats.
  *
@@ -32,13 +35,23 @@ class ReportSummary extends ReportBase
                 $report['severity'],
                 $this->normalizeFilePath($file_name)
             ));
-            foreach ($report['stats'] as $source => $info) {
-                $source_padded = str_pad($source, $report['widths']['source'], ' ', STR_PAD_RIGHT);
-                $source_decorated = $this->highlightNormalBySeverity($info['severity'], $source_padded);
-                $count_padded = str_pad($info['count'], strlen($report['occurrences']), ' ', STR_PAD_LEFT);
 
-                $this->destination->writeln("$source_decorated: $count_padded");
+            $table = new Table($this->destination);
+            $table->setHeaders([
+                'Source',
+                'Occurrences',
+            ]);
+            $tableStyleAlignRight = new TableStyle();
+            $tableStyleAlignRight->setPadType(STR_PAD_LEFT);
+            $table->setColumnStyle(1, $tableStyleAlignRight);
+            foreach ($report['stats'] as $source => $info) {
+                $table->addRow([
+                    $this->highlightNormalBySeverity($info['severity'], $source),
+                    $info['count'],
+                ]);
             }
+
+            $table->render();
 
             if ($i !== count($files) - 1) {
                 $this->destination->writeln('');

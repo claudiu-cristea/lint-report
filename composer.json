@@ -3,7 +3,8 @@
     "description": "Generate reports from lint results",
     "license": "GPL-2.0+",
     "config": {
-        "bin-dir": "bin"
+        "bin-dir": "bin",
+        "sort-packages": true
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
@@ -12,9 +13,9 @@
         "symfony/filesystem": "^2.8"
     },
     "require-dev": {
+        "cheppers/git-hooks": "^0.0.8",
         "codeception/codeception": "^2.2",
-        "squizlabs/php_codesniffer": "2.6.2",
-        "cheppers/git-hooks": "^0.0.8"
+        "squizlabs/php_codesniffer": "2.6.2"
     },
     "autoload": {
         "psr-4": {

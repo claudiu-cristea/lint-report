@@ -4,21 +4,21 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "429ba38185e3b922c7024b0e4c7b8c71",
-    "content-hash": "92e41d41f483cc37fc5d951d9b1a788f",
+    "hash": "212c673e3ab5bc9e3037fe687610de12",
+    "content-hash": "e2a2ab36555741f552d9b1e40327f57b",
     "packages": [
         {
             "name": "symfony/console",
-            "version": "v2.8.9",
+            "version": "v2.8.11",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/console.git",
-                "reference": "36e62335caca8a6e909c5c5bac4a8128149911c9"
+                "reference": "3d3e4fa5f0614c8e45220e5de80332322e33bd90"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/console/zipball/36e62335caca8a6e909c5c5bac4a8128149911c9",
-                "reference": "36e62335caca8a6e909c5c5bac4a8128149911c9",
+                "url": "https://api.github.com/repos/symfony/console/zipball/3d3e4fa5f0614c8e45220e5de80332322e33bd90",
+                "reference": "3d3e4fa5f0614c8e45220e5de80332322e33bd90",
                 "shasum": ""
             },
             "require": {
@@ -65,7 +65,7 @@
             ],
             "description": "Symfony Console Component",
             "homepage": "https://symfony.com",
-            "time": "2016-07-30 07:20:35"
+            "time": "2016-09-06 10:55:00"
         },
         {
             "name": "symfony/filesystem",
