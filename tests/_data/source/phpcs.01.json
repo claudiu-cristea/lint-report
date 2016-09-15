@@ -5,6 +5,11 @@
         "fixable": 3
     },
     "files": {
+        "/foo/file-00.php": {
+            "errors": 0,
+            "warnings": 0,
+            "messages": []
+        },
         "/foo/file-01.php": {
             "errors": 1,
             "warnings": 1,

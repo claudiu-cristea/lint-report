@@ -29,6 +29,12 @@ class ReportVerbose extends ReportBase
         $files = $this->getValue($this->source, $this->getFilesParents());
         foreach ($files as $file_name => $file_report) {
             $errors = $this->getValue($file_report, $this->getErrorsParents());
+            if (!$errors) {
+                $i++;
+
+                continue;
+            }
+
             $report = $this->examineErrors($errors);
             $report['widths'] += [
                 'severity' => 0,

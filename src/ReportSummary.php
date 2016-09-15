@@ -31,6 +31,12 @@ class ReportSummary extends ReportBase
                 'message' => 0,
             ];
 
+            if (empty($report['stats'])) {
+                $i++;
+
+                continue;
+            }
+
             $this->destination->writeln($this->highlightHeaderBySeverity(
                 $report['severity'],
                 $this->normalizeFilePath($file_name)

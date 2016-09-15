@@ -24,6 +24,10 @@ class ReportCheckstyle extends ReportBase
 
         foreach ($this->getValue($this->source, $this->getFilesParents()) as $file_name => $file_report) {
             $errors = $this->getValue($file_report, $this->getErrorsParents());
+            if (!$errors) {
+                continue;
+            }
+
             $e_file = $dom->createElement('file');
             $e_file->setAttribute('name', $this->normalizeFilePath($file_name));
             $e_checkstyle->appendChild($e_file);
