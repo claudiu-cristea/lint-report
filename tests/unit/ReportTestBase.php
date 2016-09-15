@@ -46,6 +46,7 @@ class ReportTestBase extends \Codeception\Test\Unit
         while ($file->valid()) {
             if ($file->isDir()) {
                 $file->next();
+
                 continue;
             }
 

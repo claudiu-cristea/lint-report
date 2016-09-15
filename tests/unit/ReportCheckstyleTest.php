@@ -42,9 +42,9 @@ class ReportCheckstyleTest extends ReportTestBase
         $reporter = new ReportCheckstyle();
         $destination = new BufferedOutput();
         $reporter
+            ->setColumnMapping($sourceType)
             ->setErrorsParents($errorsParents)
             ->setFilesParents($filesParents)
-            ->setColumnMapping($sourceType)
             ->setBasePath('/foo')
             ->setFilePathStyle($filePathStyle)
             ->generate($source, $destination);

@@ -167,6 +167,11 @@ abstract class ReportBase
                 throw new \InvalidArgumentException();
             }
 
+            if ($columnMapping === 'phpcs') {
+                $this->setFilesParents(['files']);
+                $this->setErrorsParents(['messages']);
+            }
+
             $columnMapping = static::$columnMappings[$columnMapping];
         }
 

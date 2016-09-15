@@ -1,4 +1,9 @@
 {
+    "totals": {
+        "errors": 4,
+        "warnings": 0,
+        "fixable": 3
+    },
     "files": {
         "/foo/file-01.php": {
             "errors": 1,
@@ -25,8 +30,8 @@
             ]
         },
         "file-02.php": {
-            "errors": 3,
-            "warnings": 0,
+            "errors": 1,
+            "warnings": 1,
             "messages": [
                 {
                     "message": "message-03",
@@ -58,8 +63,8 @@
             ]
         },
         "file-03.php": {
-            "errors": 8,
-            "warnings": 6,
+            "errors": 1,
+            "warnings": 1,
             "messages": [
                 {
                     "message": "message-06",
