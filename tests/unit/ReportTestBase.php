@@ -1,4 +1,5 @@
 <?php
+
 use Symfony\Component\Yaml\Yaml;
 
 /**
@@ -33,7 +34,8 @@ class ReportTestBase extends \Codeception\Test\Unit
             'eslint' => \Cheppers\LintReport\Wrapper\ESLint\ReportWrapper::class,
             'phpcs' => \Cheppers\LintReport\Wrapper\Phpcs\ReportWrapper::class,
             'scss-lint' => \Cheppers\LintReport\Wrapper\ScssLint\ReportWrapper::class,
-            'tslint' => \Cheppers\LintReport\Wrapper\TSLint\ReportWrapper::class,
+            'tslint-json' => \Cheppers\LintReport\Wrapper\TSLintJson\ReportWrapper::class,
+            'tslint-yaml' => \Cheppers\LintReport\Wrapper\TSLintYaml\ReportWrapper::class,
         ];
 
         while ($file->valid()) {
@@ -104,6 +106,7 @@ class ReportTestBase extends \Codeception\Test\Unit
         $documents = preg_split(
             '@(^|\n)---\n(?=failures:\n)@',
             file_get_contents($fileName),
+            -1,
             PREG_SPLIT_NO_EMPTY
         );
 

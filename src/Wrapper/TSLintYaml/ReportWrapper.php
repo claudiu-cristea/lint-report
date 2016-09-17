@@ -1,13 +1,13 @@
 <?php
 
-namespace Cheppers\LintReport\Wrapper\TSLint;
+namespace Cheppers\LintReport\Wrapper\TSLintYaml;
 
 use Cheppers\LintReport\ReportWrapperInterface;
 
 /**
  * Class ReportWrapper.
  *
- * @package Cheppers\LintReport\Wrapper\TSLint
+ * @package Cheppers\LintReport\Wrapper\TSLintYaml
  */
 class ReportWrapper implements ReportWrapperInterface
 {

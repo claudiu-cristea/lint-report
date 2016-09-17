@@ -11,34 +11,6 @@ use Cheppers\LintReport\ReportWrapperInterface;
  */
 class ReportWrapper implements ReportWrapperInterface
 {
-
-//    /**
-//     * @var string[]
-//     */
-//    protected static $severityMap = [
-//        0 => ReportWrapperInterface::SEVERITY_OK,
-//        1 => ReportWrapperInterface::SEVERITY_WARNING,
-//        2 => ReportWrapperInterface::SEVERITY_ERROR,
-//    ];
-//
-//    /**
-//     * @return string[]
-//     */
-//    public static function severityMap()
-//    {
-//        return static::$severityMap;
-//    }
-//
-//    /**
-//     * @param int $severity
-//     *
-//     * @return string
-//     */
-//    public static function severity($severity)
-//    {
-//        return static::$severityMap[$severity];
-//    }
-
     /**
      * @var array
      */
@@ -70,6 +42,14 @@ class ReportWrapper implements ReportWrapperInterface
     public function setReport($report)
     {
         $this->report = $report;
+        $this->report += [
+            'totals' => [
+                'errors' => 0,
+                'warnings' => 0,
+                'fixable' => 0,
+            ],
+            'files' => [],
+        ];
 
         return $this;
     }

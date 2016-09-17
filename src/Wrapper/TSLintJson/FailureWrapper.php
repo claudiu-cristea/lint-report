@@ -1,13 +1,13 @@
 <?php
 
-namespace Cheppers\LintReport\Wrapper\TSLint;
+namespace Cheppers\LintReport\Wrapper\TSLintJson;
 
 use Cheppers\LintReport\FailureWrapperInterface;
 
 /**
  * Class FileWrapper.
  *
- * @package Cheppers\LintReport\Wrapper\TSLint
+ * @package Cheppers\LintReport\Wrapper\TSLintJson
  */
 class FailureWrapper implements FailureWrapperInterface
 {
@@ -23,20 +23,11 @@ class FailureWrapper implements FailureWrapperInterface
     {
         // @todo Validate.
         $this->failure = $failure + [
-            'failure' => '',
-            'severity' => 'error',
-            'name' => '',
-            'ruleName' => '',
-            'startPosition' => [
-                'line' => 0,
-                'character' => 0,
-                'position' => 0,
-            ],
-            'endPosition' => [
-                'line' => 0,
-                'character' => 0,
-                'position' => 0,
-            ],
+            'severity' => '',
+            'source' => '',
+            'message' => '',
+            'line' => 0,
+            'column' => 0,
         ];
     }
 
@@ -53,7 +44,7 @@ class FailureWrapper implements FailureWrapperInterface
      */
     public function source()
     {
-        return $this->failure['ruleName'];
+        return $this->failure['source'];
     }
 
     /**
@@ -61,7 +52,7 @@ class FailureWrapper implements FailureWrapperInterface
      */
     public function line()
     {
-        return $this->failure['startPosition']['line'];
+        return $this->failure['line'];
     }
 
     /**
@@ -69,7 +60,7 @@ class FailureWrapper implements FailureWrapperInterface
      */
     public function column()
     {
-        return $this->failure['startPosition']['character'];
+        return $this->failure['column'];
     }
 
     /**
@@ -77,6 +68,6 @@ class FailureWrapper implements FailureWrapperInterface
      */
     public function message()
     {
-        return $this->failure['failure'];
+        return $this->failure['message'];
     }
 }

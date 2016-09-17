@@ -1,6 +1,6 @@
 <?php
 
-namespace Cheppers\LintReport\Wrapper\TSLint;
+namespace Cheppers\LintReport\Wrapper\TSLintYaml;
 
 use Cheppers\LintReport\FileWrapperInterface;
 use Cheppers\LintReport\ReportWrapperInterface;
@@ -8,7 +8,7 @@ use Cheppers\LintReport\ReportWrapperInterface;
 /**
  * Class FileWrapper.
  *
- * @package Cheppers\LintReport\Wrapper\TSLint
+ * @package Cheppers\LintReport\Wrapper\TSLintYaml
  */
 class FileWrapper implements FileWrapperInterface
 {

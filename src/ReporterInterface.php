@@ -12,6 +12,18 @@ use Symfony\Component\Console\Output\OutputInterface;
 interface ReporterInterface
 {
     /**
+     * @return ReportWrapperInterface
+     */
+    public function getReportWrapper();
+
+    /**
+     * @param ReportWrapperInterface $reportWrapper
+     *
+     * @return $this
+     */
+    public function setReportWrapper(ReportWrapperInterface $reportWrapper);
+
+    /**
      * @return string
      */
     public function getBasePath();
@@ -22,6 +34,18 @@ interface ReporterInterface
      * @return $this
      */
     public function setBasePath($basePath);
+
+    /**
+     * @return string|null
+     */
+    public function getFilePathStyle();
+
+    /**
+     * @param string|null $value
+     *
+     * @return $this
+     */
+    public function setFilePathStyle($value);
 
     /**
      * @param array $source
