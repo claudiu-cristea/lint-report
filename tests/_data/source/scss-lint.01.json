@@ -1,4 +1,5 @@
 {
+    "/foo/file-00.php": [],
     "/foo/file-01.php": [
         {
             "reason": "message-01",

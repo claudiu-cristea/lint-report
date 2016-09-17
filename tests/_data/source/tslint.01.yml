@@ -1,0 +1,92 @@
+---
+failures:
+  -
+    name: /foo/file-01.php
+    ruleName: source-01
+    failure: message-01
+    startPosition:
+      line: 1
+      character: 2
+      position: 2
+    endPosition:
+      line: 1
+      character: 3
+      position: 2
+  -
+    name: /foo/file-01.php
+    ruleName: source-02
+    failure: message-02
+    severity: warning
+    startPosition:
+      line: 3
+      character: 4
+      position: 2
+    endPosition:
+      line: 1
+      character: 3
+      position: 2
+---
+failures:
+  -
+    name: file-02.php
+    ruleName: source-03
+    failure: message-03
+    startPosition:
+      line: 5
+      character: 6
+      position: 2
+    endPosition:
+      line: 1
+      character: 3
+      position: 2
+  -
+    name: file-02.php
+    ruleName: source-04
+    failure: message-04
+    startPosition:
+      line: 7
+      character: 8
+      position: 2
+    endPosition:
+      line: 1
+      character: 3
+      position: 2
+  -
+    name: file-02.php
+    ruleName: source-05
+    failure: message-05
+    startPosition:
+      line: 9
+      character: 10
+      position: 2
+    endPosition:
+      line: 1
+      character: 3
+      position: 2
+---
+failures:
+  -
+    name: file-03.php
+    ruleName: source-06
+    failure: message-06
+    startPosition:
+      line: 11
+      character: 12
+      position: 2
+    endPosition:
+      line: 1
+      character: 3
+      position: 2
+  -
+    name: file-03.php
+    ruleName: source-07
+    failure: message-07
+    severity: warning
+    startPosition:
+      line: 13
+      character: 14
+      position: 2
+    endPosition:
+      line: 1
+      character: 3
+      position: 2

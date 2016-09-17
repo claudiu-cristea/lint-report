@@ -26,29 +26,14 @@ class ReportTestBase extends \Codeception\Test\Unit
     {
         $cases = [];
 
-        $dir = rtrim(codecept_data_dir(), '/');
-        $file = new \DirectoryIterator("$dir/source");
-
-        $parents = [
-            'default' => [
-                'filesParents' => [],
-                'errorsParents' => [],
-            ],
-            'phpcs' => [
-                'filesParents' => ['files'],
-                'errorsParents' => ['messages'],
-            ],
-            'scss-lint' => [
-                'filesParents' => [],
-                'errorsParents' => [],
-            ],
-        ];
+        $dataDir = rtrim(codecept_data_dir(), '/');
+        $file = new \DirectoryIterator("$dataDir/source");
 
         $sourceType2WrapperClass = [
             'eslint' => \Cheppers\LintReport\Wrapper\ESLint\ReportWrapper::class,
             'phpcs' => \Cheppers\LintReport\Wrapper\Phpcs\ReportWrapper::class,
             'scss-lint' => \Cheppers\LintReport\Wrapper\ScssLint\ReportWrapper::class,
-//            'tslint' => \Cheppers\LintReport\Wrapper\TSLint\RepWrapper::class,
+            'tslint' => \Cheppers\LintReport\Wrapper\TSLint\ReportWrapper::class,
         ];
 
         while ($file->valid()) {
@@ -58,33 +43,34 @@ class ReportTestBase extends \Codeception\Test\Unit
                 continue;
             }
 
-            $base_name = $file->getBasename('.json');
-            list($sourceType, $number) = explode('.', $base_name);
+            $baseName = $file->getBasename();
+            list($sourceType, $number, $extension) = explode('.', $baseName);
+            $baseName = "$sourceType.$number";
 
-            foreach (['relative', 'absolute', null] as $file_path_style) {
-                $file_path_style_str = ($file_path_style ?: 'null');
+            foreach (['relative', 'absolute', null] as $filePathStyle) {
+                $filePathStyleStr = ($filePathStyle ?: 'null');
                 $expected = implode('.', [
                     $this->reporterName,
                     $number,
-                    $file_path_style_str,
+                    $filePathStyleStr,
                     $this->reporterOutputExtension,
                 ]);
 
-                $caseId = "{$this->reporterName}.$base_name.$file_path_style_str";
+                $caseId = "{$this->reporterName}.$baseName.$filePathStyleStr";
 
                 $wrapperClass = $sourceType2WrapperClass[$sourceType];
 
                 $cases[$caseId] = [
                     'reportWrapper' => new $wrapperClass(),
                     'source' => null,
-                    'filePathStyle' => $file_path_style,
-                    'expected' => file_get_contents("$dir/expected/$expected"),
+                    'filePathStyle' => $filePathStyle,
+                    'expected' => file_get_contents("$dataDir/expected/$expected"),
                 ];
 
-                if ($file->getExtension() === 'json') {
+                if ($extension === 'json') {
                     $cases[$caseId]['source'] = json_decode(file_get_contents($file->getPathname()), true);
                 } else {
-                    $cases[$caseId]['source'] = Yaml::parse(file_get_contents($file->getPathname()));
+                    $cases[$caseId]['source'] = $this->yamlParse($file->getPathname());
                 }
             }
 
@@ -92,5 +78,39 @@ class ReportTestBase extends \Codeception\Test\Unit
         }
 
         return $cases;
+    }
+
+    /**
+     * @param string $fileName
+     *
+     * @return array
+     */
+    protected function yamlParse($fileName)
+    {
+        if (function_exists('yaml_parse_file')) {
+            return yaml_parse_file($fileName, -1);
+        }
+
+        return $this->yamlParseSymfonyMultiDocument($fileName);
+    }
+
+    /**
+     * @param string $fileName
+     *
+     * @return array
+     */
+    protected function yamlParseSymfonyMultiDocument($fileName)
+    {
+        $documents = preg_split(
+            '@(^|\n)---\n(?=failures:\n)@',
+            file_get_contents($fileName),
+            PREG_SPLIT_NO_EMPTY
+        );
+
+        for ($i = 0; $i < count($documents); $i++) {
+            $documents[$i] = Yaml::parse($documents[$i]);
+        }
+
+        return $documents;
     }
 }

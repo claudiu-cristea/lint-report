@@ -10,7 +10,8 @@
     "prefer-stable": true,
     "require": {
         "symfony/console": "^2.8",
-        "symfony/filesystem": "^2.8"
+        "symfony/filesystem": "^2.8",
+        "symfony/yaml": "^2.8|^3.1"
     },
     "require-dev": {
         "cheppers/git-hooks": "^0.0.8",
