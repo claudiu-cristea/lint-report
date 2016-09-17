@@ -1,19 +1,20 @@
 <?php
 
-namespace Cheppers\LintReport;
+namespace Cheppers\LintReport\Reporter;
 
+use Cheppers\LintReport\ReporterInterface;
+use Cheppers\LintReport\ReportWrapperInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Output\StreamOutput;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
- * Class ReportFull.
+ * Class BaseReporter.
  *
- * @package Cheppers\LintReport
+ * @package Cheppers\LintReport\Reporter
  */
-abstract class ReportBase
+abstract class BaseReporter implements ReporterInterface
 {
-
     /**
      * @var array
      */
@@ -63,29 +64,6 @@ abstract class ReportBase
     protected $destinationResource = null;
 
     /**
-     * @var string[]
-     */
-    protected $filesParents = [];
-
-    /**
-     * @var string[]
-     */
-    protected $errorsParents = [];
-
-    /**
-     * @var array
-     */
-    protected $columnMapping = [
-        'linter' => 'source',
-        'line' => 'line',
-        'column' => 'column',
-        'length' => 'length',
-        'severity' => 'severity',
-        'source' => 'source',
-        'message' => 'message',
-    ];
-
-    /**
      * @var string
      */
     protected $basePath = '';
@@ -96,6 +74,11 @@ abstract class ReportBase
     protected $filePathStyle = null;
 
     /**
+     * @var ReportWrapperInterface
+     */
+    protected $reportWrapper = null;
+
+    /**
      * ReportBase constructor.
      */
     public function __construct()
@@ -104,84 +87,7 @@ abstract class ReportBase
     }
 
     /**
-     * @return string[]
-     */
-    public function getFilesParents()
-    {
-        return $this->filesParents;
-    }
-
-    /**
-     * @param string[] $filesParents
-     *
-     * @return $this;
-     */
-    public function setFilesParents(array $filesParents)
-    {
-        $this->filesParents = $filesParents;
-
-        return $this;
-    }
-
-    /**
-     * @return string[]
-     */
-    public function getErrorsParents()
-    {
-        return $this->errorsParents;
-    }
-
-    /**
-     * @param string[] $errorsParents
-     *
-     * @return $this
-     */
-    public function setErrorsParents(array $errorsParents)
-    {
-        $this->errorsParents = $errorsParents;
-
-        return $this;
-    }
-
-    /**
-     * @return array
-     */
-    public function getColumnMapping()
-    {
-        return $this->columnMapping;
-    }
-
-    /**
-     * @param array|string $columnMapping
-     *
-     * @return $this
-     */
-    public function setColumnMapping($columnMapping)
-    {
-        if (!$columnMapping) {
-            $columnMapping = 'default';
-        }
-
-        if (is_string($columnMapping)) {
-            if (!isset(static::$columnMappings[$columnMapping])) {
-                throw new \InvalidArgumentException();
-            }
-
-            if ($columnMapping === 'phpcs') {
-                $this->setFilesParents(['files']);
-                $this->setErrorsParents(['messages']);
-            }
-
-            $columnMapping = static::$columnMappings[$columnMapping];
-        }
-
-        $this->columnMapping = $columnMapping;
-
-        return $this;
-    }
-
-    /**
-     * @return string
+     * {@inheritdoc}
      */
     public function getBasePath()
     {
@@ -189,6 +95,8 @@ abstract class ReportBase
     }
 
     /**
+     * {@inheritdoc}
+     *
      * @param string $basePath
      *
      * @return $this
@@ -225,17 +133,33 @@ abstract class ReportBase
     }
 
     /**
-     * @param array $source
-     * @param string|OutputInterface $destination
-     * @param string $destination_mode
+     * @return ReportWrapperInterface
+     */
+    public function getReportWrapper()
+    {
+        return $this->reportWrapper;
+    }
+
+    /**
+     * @param ReportWrapperInterface $reportWrapper
      *
      * @return $this
      */
-    public function generate($source, $destination, $destination_mode = 'w')
+    public function setReportWrapper(ReportWrapperInterface $reportWrapper)
+    {
+        $this->reportWrapper = $reportWrapper;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function generate($source, $destination, $destinationMode = 'w')
     {
         return $this
             ->initSource($source)
-            ->initDestination($destination, $destination_mode)
+            ->initDestination($destination, $destinationMode)
             ->doIt()
             ->closeDestination();
     }
@@ -344,69 +268,6 @@ abstract class ReportBase
     }
 
     /**
-     * Get the length of the attribute values grouped by the attribute name.
-     *
-     * @param array $errors
-     *   List of errors.
-     *
-     * @return array
-     *   Key-value pair of attribute name and the max length.
-     */
-    protected function examineErrors(array $errors)
-    {
-        $report = [
-            // Most serious severity.
-            'severity' => 'unknown',
-            // List of severities.
-            'has' => [],
-            // Column widths.
-            'widths' => [],
-            'stats' => [],
-            'occurrences' => 0,
-        ];
-
-        $severity_weights = [
-            'unknown' => 0,
-            'warning' => 1,
-            'error' => 2,
-        ];
-
-        foreach ($errors as $error) {
-            $error = $this->convertErrorToInternalFormat($error);
-
-            if (isset($severity_weights[$error['severity']])
-                && $severity_weights[$error['severity']] > $severity_weights[$report['severity']]
-            ) {
-                $report['severity'] = $error['severity'];
-            }
-
-            $report['has'][$error['severity']] = true;
-
-            foreach ($error as $name => $value) {
-                $report['widths'] += [$name => 0];
-                if (strlen($value) > $report['widths'][$name]) {
-                    $report['widths'][$name] = strlen($value);
-                }
-            }
-
-            $report['stats'] += [
-                $error['source'] => [
-                    'severity' => $error['severity'],
-                    'count' => 0,
-                ],
-            ];
-
-            $report['stats'][$error['source']]['count']++;
-
-            if ($report['stats'][$error['source']]['count'] > $report['occurrences']) {
-                $report['occurrences'] = $report['stats'][$error['source']]['count'];
-            }
-        }
-
-        return $report;
-    }
-
-    /**
      * Set colors.
      *
      * @param string $severity
@@ -450,49 +311,5 @@ abstract class ReportBase
         $pattern = isset($patterns[$severity]) ? $patterns[$severity] : '<info>%s</info>';
 
         return sprintf($pattern, $text);
-    }
-
-    /**
-     * @param array $error
-     *
-     * @return array
-     */
-    protected function convertErrorToInternalFormat(array $error)
-    {
-        $internal = array_fill_keys($this->getColumnMapping(), '');
-        foreach ($this->getColumnMapping() as $dst => $src) {
-            if (isset($error[$src])) {
-                $internal[$dst] = $error[$src];
-            }
-        }
-
-        $internal['severity'] = strtolower($internal['severity']);
-
-        return $internal + $error;
-    }
-
-    /**
-     * @param array $array
-     * @param array $parents
-     * @param null $key_exists
-     *
-     * @return mixed|null
-     */
-    public function &getValue(array $array, array $parents, &$key_exists = null)
-    {
-        $ref = &$array;
-        foreach ($parents as $parent) {
-            if (is_array($ref) && array_key_exists($parent, $ref)) {
-                $ref = &$ref[$parent];
-            } else {
-                $key_exists = false;
-                $null = null;
-
-                return $null;
-            }
-        }
-        $key_exists = true;
-
-        return $ref;
     }
 }

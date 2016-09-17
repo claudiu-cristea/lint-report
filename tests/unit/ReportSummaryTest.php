@@ -1,6 +1,8 @@
 <?php
 
+use Cheppers\LintReport\Reporter\SummaryReporter;
 use Cheppers\LintReport\ReportSummary;
+use Cheppers\LintReport\ReportWrapperInterface;
 use Symfony\Component\Console\Output\BufferedOutput;
 
 /**
@@ -24,27 +26,21 @@ class ReportSummaryTest extends ReportTestBase
     /**
      * @dataProvider casesGenerate
      *
-     * @param string $sourceType
+     * @param ReportWrapperInterface $reportWrapper
      * @param array $source
-     * @param array $filesParents
-     * @param array $errorsParents
      * @param string|null $filePathStyle
      * @param string $expected
      */
     public function testGenerate(
-        $sourceType,
+        ReportWrapperInterface $reportWrapper,
         array $source,
-        array $filesParents,
-        array $errorsParents,
         $filePathStyle,
         $expected
     ) {
-        $reporter = new ReportSummary();
+        $reporter = new SummaryReporter();
         $destination = new BufferedOutput();
         $reporter
-            ->setErrorsParents($errorsParents)
-            ->setFilesParents($filesParents)
-            ->setColumnMapping($sourceType)
+            ->setReportWrapper($reportWrapper)
             ->setBasePath('/foo')
             ->setFilePathStyle($filePathStyle)
             ->generate($source, $destination);

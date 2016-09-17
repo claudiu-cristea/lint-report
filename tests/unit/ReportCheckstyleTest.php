@@ -1,6 +1,8 @@
 <?php
 
 use Cheppers\LintReport\ReportCheckstyle;
+use Cheppers\LintReport\Reporter\CheckstyleReporter;
+use Cheppers\LintReport\ReportWrapperInterface;
 use Symfony\Component\Console\Output\BufferedOutput;
 
 /**
@@ -24,27 +26,21 @@ class ReportCheckstyleTest extends ReportTestBase
     /**
      * @dataProvider casesGenerate
      *
-     * @param string $sourceType
+     * @param ReportWrapperInterface $reportWrapper
      * @param array $source
-     * @param array $filesParents
-     * @param array $errorsParents
      * @param string|null $filePathStyle
      * @param string $expected
      */
     public function testGenerate(
-        $sourceType,
+        ReportWrapperInterface $reportWrapper,
         array $source,
-        array $filesParents,
-        array $errorsParents,
         $filePathStyle,
         $expected
     ) {
-        $reporter = new ReportCheckstyle();
+        $reporter = new CheckstyleReporter();
         $destination = new BufferedOutput();
         $reporter
-            ->setColumnMapping($sourceType)
-            ->setErrorsParents($errorsParents)
-            ->setFilesParents($filesParents)
+            ->setReportWrapper($reportWrapper)
             ->setBasePath('/foo')
             ->setFilePathStyle($filePathStyle)
             ->generate($source, $destination);
@@ -53,33 +49,9 @@ class ReportCheckstyleTest extends ReportTestBase
 
     public function testSetFilePathStyle()
     {
-        $reporter = new ReportCheckstyle();
+        $reporter = new CheckstyleReporter();
         try {
             $reporter->setFilePathStyle('invalid');
-            $this->fail('Expected exception is missing.');
-        } catch (\InvalidArgumentException $e) {
-            $this->assertTrue(true, 'Invalid value cannot be applied.');
-        }
-    }
-
-    public function testSetColumnMapping()
-    {
-        $reporter = new ReportCheckstyle();
-
-        $reporter->setColumnMapping('phpcs');
-        $this->assertEquals(
-            ReportCheckstyle::$columnMappings['phpcs'],
-            $reporter->getColumnMapping()
-        );
-
-        $reporter->setColumnMapping('');
-        $this->assertEquals(
-            ReportCheckstyle::$columnMappings['default'],
-            $reporter->getColumnMapping()
-        );
-
-        try {
-            $reporter->setColumnMapping('invalid');
             $this->fail('Expected exception is missing.');
         } catch (\InvalidArgumentException $e) {
             $this->assertTrue(true, 'Invalid value cannot be applied.');

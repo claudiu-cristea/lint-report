@@ -20,5 +20,5 @@
 | Severity | Source    | Line | Column | Message    |
 +----------+-----------+------+--------+------------+
 | error    | source-06 |   11 |     12 | message-06 |
-| error    | source-07 |   13 |     14 | message-07 |
+| warning  | source-07 |   13 |     14 | message-07 |
 +----------+-----------+------+--------+------------+

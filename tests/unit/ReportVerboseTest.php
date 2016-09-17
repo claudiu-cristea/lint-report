@@ -1,6 +1,7 @@
 <?php
 
-use Cheppers\LintReport\ReportVerbose;
+use Cheppers\LintReport\Reporter\VerboseReporter;
+use Cheppers\LintReport\ReportWrapperInterface;
 use Symfony\Component\Console\Output\BufferedOutput;
 
 /**
@@ -24,27 +25,21 @@ class ReportVerboseTest extends ReportTestBase
     /**
      * @dataProvider casesGenerate
      *
-     * @param string $sourceType
+     * @param ReportWrapperInterface $reportWrapper
      * @param array $source
-     * @param array $filesParents
-     * @param array $errorsParents
      * @param string|null $filePathStyle
      * @param string $expected
      */
     public function testGenerate(
-        $sourceType,
+        ReportWrapperInterface $reportWrapper,
         array $source,
-        array $filesParents,
-        array $errorsParents,
         $filePathStyle,
         $expected
     ) {
-        $reporter = new ReportVerbose();
+        $reporter = new VerboseReporter();
         $destination = new BufferedOutput();
         $reporter
-            ->setErrorsParents($errorsParents)
-            ->setFilesParents($filesParents)
-            ->setColumnMapping($sourceType)
+            ->setReportWrapper($reportWrapper)
             ->setBasePath('/foo')
             ->setFilePathStyle($filePathStyle)
             ->generate($source, $destination);

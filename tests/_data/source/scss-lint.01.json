@@ -55,7 +55,7 @@
         {
             "reason": "message-07",
             "linter": "source-07",
-            "severity": "error",
+            "severity": "warning",
             "line": 13,
             "column": 14,
             "length": 43

@@ -43,6 +43,14 @@ class ReportTestBase extends \Codeception\Test\Unit
                 'errorsParents' => [],
             ],
         ];
+
+        $sourceType2WrapperClass = [
+            'eslint' => \Cheppers\LintReport\Wrapper\ESLint\ReportWrapper::class,
+            'phpcs' => \Cheppers\LintReport\Wrapper\Phpcs\ReportWrapper::class,
+            'scss-lint' => \Cheppers\LintReport\Wrapper\ScssLint\ReportWrapper::class,
+//            'tslint' => \Cheppers\LintReport\Wrapper\TSLint\RepWrapper::class,
+        ];
+
         while ($file->valid()) {
             if ($file->isDir()) {
                 $file->next();
@@ -64,11 +72,11 @@ class ReportTestBase extends \Codeception\Test\Unit
 
                 $caseId = "{$this->reporterName}.$base_name.$file_path_style_str";
 
+                $wrapperClass = $sourceType2WrapperClass[$sourceType];
+
                 $cases[$caseId] = [
-                    'sourceType' => $sourceType,
+                    'reportWrapper' => new $wrapperClass(),
                     'source' => null,
-                    'filesParents' => $parents[$sourceType]['filesParents'],
-                    'errorsParents' => $parents[$sourceType]['errorsParents'],
                     'filePathStyle' => $file_path_style,
                     'expected' => file_get_contents("$dir/expected/$expected"),
                 ];

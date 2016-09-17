@@ -1,0 +1,141 @@
+[
+    {
+        "filePath": "/foo/file-00.php",
+        "messages": [],
+        "errorCount": 0,
+        "warningCount": 0
+    },
+    {
+        "filePath": "/foo/file-01.php",
+        "messages": [
+            {
+                "ruleId": "source-01",
+                "severity": 2,
+                "message": "message-01",
+                "line": 1,
+                "column": 2,
+                "nodeType": "ExpressionStatement",
+                "source": "    'use strict';",
+                "fix": {
+                    "range": [
+                        18,
+                        20
+                    ],
+                    "text": ""
+                }
+            },
+            {
+                "ruleId": "source-02",
+                "severity": 1,
+                "message": "message-02",
+                "line": 3,
+                "column": 4,
+                "nodeType": "ExpressionStatement",
+                "source": "    a = 42;",
+                "fix": {
+                    "range": [
+                        37,
+                        39
+                    ],
+                    "text": ""
+                }
+            }
+        ],
+        "errorCount": 1,
+        "warningCount": 1
+    },
+    {
+        "filePath": "file-02.php",
+        "messages": [
+            {
+                "ruleId": "source-03",
+                "severity": 2,
+                "message": "message-03",
+                "line": 5,
+                "column": 6,
+                "nodeType": "ExpressionStatement",
+                "source": "    'use strict';",
+                "fix": {
+                    "range": [
+                        18,
+                        20
+                    ],
+                    "text": ""
+                }
+            },
+            {
+                "ruleId": "source-04",
+                "severity": 2,
+                "message": "message-04",
+                "line": 7,
+                "column": 8,
+                "nodeType": "ExpressionStatement",
+                "source": "    a = 42;",
+                "fix": {
+                    "range": [
+                        37,
+                        39
+                    ],
+                    "text": ""
+                }
+            },
+            {
+                "ruleId": "source-05",
+                "severity": 2,
+                "message": "message-05",
+                "line": 9,
+                "column": 10,
+                "nodeType": "ExpressionStatement",
+                "source": "    a = 42;",
+                "fix": {
+                    "range": [
+                        37,
+                        39
+                    ],
+                    "text": ""
+                }
+            }
+        ],
+        "errorCount": 1,
+        "warningCount": 1
+    },
+    {
+        "filePath": "file-03.php",
+        "messages": [
+            {
+                "ruleId": "source-06",
+                "severity": 2,
+                "message": "message-06",
+                "line": 11,
+                "column": 12,
+                "nodeType": "ExpressionStatement",
+                "source": "    'use strict';",
+                "fix": {
+                    "range": [
+                        18,
+                        20
+                    ],
+                    "text": ""
+                }
+            },
+            {
+                "ruleId": "source-07",
+                "severity": 1,
+                "message": "message-07",
+                "line": 13,
+                "column": 14,
+                "nodeType": "ExpressionStatement",
+                "source": "    a = 42;",
+                "fix": {
+                    "range": [
+                        37,
+                        39
+                    ],
+                    "text": ""
+                }
+            }
+        ],
+        "errorCount": 1,
+        "warningCount": 1
+    }
+]

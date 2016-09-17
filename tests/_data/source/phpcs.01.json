@@ -35,8 +35,8 @@
             ]
         },
         "file-02.php": {
-            "errors": 1,
-            "warnings": 1,
+            "errors": 3,
+            "warnings": 0,
             "messages": [
                 {
                     "message": "message-03",
@@ -84,7 +84,7 @@
                     "message": "message-07",
                     "source": "source-07",
                     "severity": 5,
-                    "type": "ERROR",
+                    "type": "WARNING",
                     "line": 13,
                     "column": 14,
                     "fixable": false
