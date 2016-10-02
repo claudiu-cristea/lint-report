@@ -1,21 +1,19 @@
 <?php
 
-namespace Cheppers\LintReport\Wrapper\Phpcs;
+namespace Helper\Dummy\LintReportWrapper;
 
 use Cheppers\LintReport\FileWrapperInterface;
 use Cheppers\LintReport\ReportWrapperInterface;
 
 /**
  * Class FileWrapper.
- *
- * @package Cheppers\LintReport\Wrapper\Phpcs
  */
 class FileWrapper implements FileWrapperInterface
 {
     /**
      * @var array
      */
-    protected $file = [];
+    protected $item = [];
 
     /**
      * @var array
@@ -27,7 +25,7 @@ class FileWrapper implements FileWrapperInterface
      */
     public function __construct(array $file)
     {
-        $this->file = $file + [
+        $this->item = $file + [
             'filePath' => '',
             'errorCount' => '',
             'warningCount' => '',
@@ -40,7 +38,7 @@ class FileWrapper implements FileWrapperInterface
      */
     public function filePath()
     {
-        return $this->file['filePath'];
+        return $this->item['filePath'];
     }
 
     /**
@@ -48,7 +46,7 @@ class FileWrapper implements FileWrapperInterface
      */
     public function numOfErrors()
     {
-        return $this->file['errors'];
+        return $this->item['errorCount'];
     }
 
     /**
@@ -56,7 +54,7 @@ class FileWrapper implements FileWrapperInterface
      */
     public function numOfWarnings()
     {
-        return $this->file['warnings'];
+        return $this->item['warningCount'];
     }
 
     /**
@@ -64,8 +62,8 @@ class FileWrapper implements FileWrapperInterface
      */
     public function yieldFailures()
     {
-        foreach ($this->file['messages'] as $failure) {
-            yield new FailureWrapper($failure);
+        foreach ($this->item['messages'] as $message) {
+            yield new FailureWrapper($message);
         }
     }
 
@@ -76,32 +74,28 @@ class FileWrapper implements FileWrapperInterface
     {
         if (!$this->stats) {
             $this->stats = [
-                'severityWeight' => '',
-                'severity' => '',
-                'has' => [
-                    ReportWrapperInterface::SEVERITY_OK => false,
-                    ReportWrapperInterface::SEVERITY_WARNING => false,
-                    ReportWrapperInterface::SEVERITY_ERROR => false,
-                ],
+                'severity' => 0,
+                'has' => array_fill_keys(ReportWrapper::severityMap(), false),
                 'source' => [],
             ];
-            foreach ($this->file['messages'] as $failure) {
-                $severity = strtolower($failure['type']);
-                if ($this->stats['severityWeight'] < $failure['severity']) {
-                    $this->stats['severityWeight'] = $failure['severity'];
-                    $this->stats['severity'] = $severity;
+            foreach ($this->item['messages'] as $message) {
+                if ($this->stats['severity'] < $message['severity']) {
+                    $this->stats['severity'] = $message['severity'];
                 }
 
+                $severity = ReportWrapper::severity($message['severity']);
                 $this->stats['has'][$severity] = true;
 
                 $this->stats['source'] += [
-                    $failure['source'] => [
+                    $message['ruleId'] => [
                         'severity' => $severity,
                         'count' => 0,
                     ],
                 ];
-                $this->stats['source'][$failure['source']]['count']++;
+                $this->stats['source'][$message['ruleId']]['count']++;
             }
+
+            $this->stats['severity'] = ReportWrapper::severity($this->stats['severity']);
         }
 
         return $this->stats;

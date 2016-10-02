@@ -24,7 +24,6 @@ class CheckstyleReporter extends BaseReporter
         $dom->appendChild($e_checkstyle);
 
         $reportWrapper = $this->getReportWrapper();
-        $reportWrapper->setReport($this->source);
         foreach ($reportWrapper->yieldFiles() as $fileWrapper) {
             if ($fileWrapper->highestSeverity() === ReportWrapperInterface::SEVERITY_OK) {
                 continue;
@@ -44,7 +43,7 @@ class CheckstyleReporter extends BaseReporter
                 $e_error->setAttribute('message', $failureWrapper->message());
             }
         }
-        $this->destination->write($dom->saveXML());
+        $this->destinationOutput->write($dom->saveXML());
 
         return $this;
     }

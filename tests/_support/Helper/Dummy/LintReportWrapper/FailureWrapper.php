@@ -1,13 +1,11 @@
 <?php
 
-namespace Cheppers\LintReport\Wrapper\TSLintJson;
+namespace Helper\Dummy\LintReportWrapper;
 
 use Cheppers\LintReport\FailureWrapperInterface;
 
 /**
  * Class FileWrapper.
- *
- * @package Cheppers\LintReport\Wrapper\TSLintJson
  */
 class FailureWrapper implements FailureWrapperInterface
 {
@@ -23,11 +21,17 @@ class FailureWrapper implements FailureWrapperInterface
     {
         // @todo Validate.
         $this->failure = $failure + [
-            'severity' => '',
-            'source' => '',
+            'ruleId' => '',
+            'severity' => 0,
             'message' => '',
             'line' => 0,
             'column' => 0,
+            'nodeType' => '',
+            'source' => '',
+            'fix' => [
+                'range' => [0, 0],
+                'text' => '',
+            ],
         ];
     }
 
@@ -36,7 +40,7 @@ class FailureWrapper implements FailureWrapperInterface
      */
     public function severity()
     {
-        return $this->failure['severity'];
+        return ReportWrapper::severity($this->failure['severity']);
     }
 
     /**
@@ -44,7 +48,7 @@ class FailureWrapper implements FailureWrapperInterface
      */
     public function source()
     {
-        return $this->failure['source'];
+        return $this->failure['ruleId'];
     }
 
     /**

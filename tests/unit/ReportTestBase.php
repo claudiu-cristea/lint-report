@@ -1,5 +1,7 @@
 <?php
 
+use Cheppers\LintReport\ReportWrapperInterface;
+use Symfony\Component\Console\Output\BufferedOutput;
 use Symfony\Component\Yaml\Yaml;
 
 /**
@@ -18,6 +20,11 @@ class ReportTestBase extends \Codeception\Test\Unit
     /**
      * @var string
      */
+    protected $reporterClass = '';
+
+    /**
+     * @var string
+     */
     protected $reporterOutputExtension = '';
 
     /**
@@ -31,11 +38,7 @@ class ReportTestBase extends \Codeception\Test\Unit
         $file = new \DirectoryIterator("$dataDir/source");
 
         $sourceType2WrapperClass = [
-            'eslint' => \Cheppers\LintReport\Wrapper\ESLint\ReportWrapper::class,
-            'phpcs' => \Cheppers\LintReport\Wrapper\Phpcs\ReportWrapper::class,
-            'scss-lint' => \Cheppers\LintReport\Wrapper\ScssLint\ReportWrapper::class,
-            'tslint-json' => \Cheppers\LintReport\Wrapper\TSLintJson\ReportWrapper::class,
-            'tslint-yaml' => \Cheppers\LintReport\Wrapper\TSLintYaml\ReportWrapper::class,
+            'eslint' => \Helper\Dummy\LintReportWrapper\ReportWrapper::class,
         ];
 
         while ($file->valid()) {
@@ -62,24 +65,49 @@ class ReportTestBase extends \Codeception\Test\Unit
 
                 $wrapperClass = $sourceType2WrapperClass[$sourceType];
 
+                if ($extension === 'json') {
+                    $report = json_decode(file_get_contents($file->getPathname()), true);
+                } else {
+                    $report = $this->yamlParse($file->getPathname());
+                }
+
                 $cases[$caseId] = [
-                    'reportWrapper' => new $wrapperClass(),
-                    'source' => null,
+                    'reportWrapper' => new $wrapperClass($report),
                     'filePathStyle' => $filePathStyle,
                     'expected' => file_get_contents("$dataDir/expected/$expected"),
                 ];
-
-                if ($extension === 'json') {
-                    $cases[$caseId]['source'] = json_decode(file_get_contents($file->getPathname()), true);
-                } else {
-                    $cases[$caseId]['source'] = $this->yamlParse($file->getPathname());
-                }
             }
 
             $file->next();
         }
 
         return $cases;
+    }
+
+    /**
+     * @dataProvider casesGenerate
+     *
+     * @param ReportWrapperInterface $reportWrapper
+     * @param string|null $filePathStyle
+     * @param string $expected
+     */
+    public function testGenerate(
+        ReportWrapperInterface $reportWrapper,
+        $filePathStyle,
+        $expected
+    ) {
+        $destination = new BufferedOutput();
+
+        /** @var \Cheppers\LintReport\ReporterInterface $reporter */
+        $reporter = new $this->reporterClass();
+        $reporter
+            ->setReportWrapper($reportWrapper)
+            ->setDestination($destination)
+            ->setBasePath('/foo')
+            ->setFilePathStyle($filePathStyle)
+            ->generate();
+
+        static::assertEquals($expected, $destination->fetch());
     }
 
     /**
