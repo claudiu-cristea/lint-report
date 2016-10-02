@@ -15,46 +15,42 @@ use Symfony\Component\Filesystem\Filesystem;
  */
 abstract class BaseReporter implements ReporterInterface
 {
-    /**
-     * @var array
-     */
-    public static $columnMappings = [
-        'default' => [
-            'severity' => 'severity',
-            'source' => 'source',
-            'line' => 'line',
-            'column' => 'column',
-            'message' => 'message',
-        ],
-        'phpcs' => [
-            'severity' => 'type',
-            'source' => 'source',
-            'line' => 'line',
-            'column' => 'column',
-            'message' => 'message',
-        ],
-        'scss-lint' => [
-            'severity' => 'severity',
-            'source' => 'linter',
-            'line' => 'line',
-            'column' => 'column',
-            'message' => 'reason',
-        ],
-    ];
 
     /**
-     * Original report to convert.
-     *
-     * @var array
+     * @param \League\Container\ContainerInterface $container
      */
-    protected $source;
+    public static function lintReportConfigureContainer($container)
+    {
+        $container->share('lintCheckstyleReporter', CheckstyleReporter::class);
+        $container->share('lintSummaryReporter', SummaryReporter::class);
+        $container->share('lintVerboseReporter', VerboseReporter::class);
+    }
+
+    /**
+     * @var ReportWrapperInterface
+     */
+    protected $reportWrapper = null;
+
+    /**
+     * Output destination.
+     *
+     * @var string|\Symfony\Component\Console\Output\OutputInterface
+     */
+    protected $destination = null;
+
+    /**
+     * Output destination mode.
+     *
+     * @var string
+     */
+    protected $destinationMode = 'w';
 
     /**
      * Output destination.
      *
      * @var \Symfony\Component\Console\Output\OutputInterface
      */
-    protected $destination = null;
+    protected $destinationOutput = null;
 
     /**
      * File handler.
@@ -74,16 +70,71 @@ abstract class BaseReporter implements ReporterInterface
     protected $filePathStyle = null;
 
     /**
-     * @var ReportWrapperInterface
-     */
-    protected $reportWrapper = null;
-
-    /**
      * ReportBase constructor.
      */
     public function __construct()
     {
         $this->setBasePath(getcwd());
+    }
+
+    /**
+     * @return ReportWrapperInterface
+     */
+    public function getReportWrapper()
+    {
+        return $this->reportWrapper;
+    }
+
+    /**
+     * @param ReportWrapperInterface $reportWrapper
+     *
+     * @return $this
+     */
+    public function setReportWrapper(ReportWrapperInterface $reportWrapper)
+    {
+        $this->reportWrapper = $reportWrapper;
+
+        return $this;
+    }
+
+    /**
+     * @return string|\Symfony\Component\Console\Output\OutputInterface
+     */
+    public function getDestination()
+    {
+        return $this->destination;
+    }
+
+    /**
+     * @param string|\Symfony\Component\Console\Output\OutputInterface $destination
+     *
+     * @return $this
+     */
+    public function setDestination($destination)
+    {
+        $this->destination = $destination;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDestinationMode()
+    {
+        return $this->destinationMode;
+    }
+
+    /**
+     * @param string $destinationMode
+     *
+     * @return $this
+     */
+    public function setDestinationMode($destinationMode)
+    {
+        $this->destinationMode = $destinationMode;
+
+        return $this;
     }
 
     /**
@@ -117,6 +168,8 @@ abstract class BaseReporter implements ReporterInterface
     }
 
     /**
+     * Allowed values are: "relative", "absolute", null.
+     *
      * @param string|null $value
      *
      * @return $this
@@ -133,51 +186,14 @@ abstract class BaseReporter implements ReporterInterface
     }
 
     /**
-     * @return ReportWrapperInterface
-     */
-    public function getReportWrapper()
-    {
-        return $this->reportWrapper;
-    }
-
-    /**
-     * @param ReportWrapperInterface $reportWrapper
-     *
-     * @return $this
-     */
-    public function setReportWrapper(ReportWrapperInterface $reportWrapper)
-    {
-        $this->reportWrapper = $reportWrapper;
-
-        return $this;
-    }
-
-    /**
      * {@inheritdoc}
      */
-    public function generate($source, $destination, $destinationMode = 'w')
+    public function generate()
     {
         return $this
-            ->initSource($source)
-            ->initDestination($destination, $destinationMode)
+            ->initDestination()
             ->doIt()
             ->closeDestination();
-    }
-
-    /**
-     * @param array|\Traversable $source
-     *
-     * @return $this
-     */
-    protected function initSource($source)
-    {
-        if (!is_array($source) && !($source instanceof \Traversable)) {
-            throw new \InvalidArgumentException('Source is not traversable', 1);
-        }
-
-        $this->source = $source;
-
-        return $this;
     }
 
     /**
@@ -188,23 +204,22 @@ abstract class BaseReporter implements ReporterInterface
      *
      * @return $this
      */
-    protected function initDestination($destination, $destination_mode)
+    protected function initDestination()
     {
-        $this->destination = $destination;
-        if (is_string($this->destination)) {
+        $destination = $this->getDestination();
+        $destinationMode = $this->getDestinationMode();
+        if (is_string($destination)) {
             $fs = new Filesystem();
-            $fs->mkdir(dirname($this->destination));
+            $fs->mkdir(dirname($destination));
 
-            $this->destinationResource = fopen($this->destination, $destination_mode);
-            $this->destination = new StreamOutput(
+            $this->destinationResource = fopen($destination, $destinationMode);
+            $this->destinationOutput = new StreamOutput(
                 $this->destinationResource,
                 OutputInterface::VERBOSITY_NORMAL,
                 false
             );
-        }
-
-        if (!$this->destination) {
-            throw new \InvalidArgumentException();
+        } else {
+            $this->destinationOutput = $destination;
         }
 
         return $this;

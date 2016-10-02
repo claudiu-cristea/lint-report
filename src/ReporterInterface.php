@@ -2,6 +2,7 @@
 
 namespace Cheppers\LintReport;
 
+use Cheppers\LintReport\ReportWrapperInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -22,6 +23,30 @@ interface ReporterInterface
      * @return $this
      */
     public function setReportWrapper(ReportWrapperInterface $reportWrapper);
+
+    /**
+     * @return string|OutputInterface
+     */
+    public function getDestination();
+
+    /**
+     * @param string|OutputInterface $destination
+     *
+     * @return $this
+     */
+    public function setDestination($destination);
+
+    /**
+     * @return string
+     */
+    public function getDestinationMode();
+
+    /**
+     * @param string $destinationMode
+     *
+     * @return $this
+     */
+    public function setDestinationMode($destinationMode);
 
     /**
      * @return string
@@ -48,11 +73,7 @@ interface ReporterInterface
     public function setFilePathStyle($value);
 
     /**
-     * @param array $source
-     * @param string|OutputInterface $destination
-     * @param string $destinationMode
-     *
      * @return $this
      */
-    public function generate($source, $destination, $destinationMode = 'w');
+    public function generate();
 }

@@ -1,9 +1,6 @@
 <?php
 
 use Cheppers\LintReport\Reporter\SummaryReporter;
-use Cheppers\LintReport\ReportSummary;
-use Cheppers\LintReport\ReportWrapperInterface;
-use Symfony\Component\Console\Output\BufferedOutput;
 
 /**
  * Class TaskScssLintRunTest.
@@ -21,30 +18,10 @@ class ReportSummaryTest extends ReportTestBase
     /**
      * {@inheritdoc}
      */
-    protected $reporterOutputExtension = 'txt';
+    protected $reporterClass = SummaryReporter::class;
 
     /**
-     * @dataProvider casesGenerate
-     *
-     * @param ReportWrapperInterface $reportWrapper
-     * @param array $source
-     * @param string|null $filePathStyle
-     * @param string $expected
+     * {@inheritdoc}
      */
-    public function testGenerate(
-        ReportWrapperInterface $reportWrapper,
-        array $source,
-        $filePathStyle,
-        $expected
-    ) {
-        $reporter = new SummaryReporter();
-        $destination = new BufferedOutput();
-        $reporter
-            ->setReportWrapper($reportWrapper)
-            ->setBasePath('/foo')
-            ->setFilePathStyle($filePathStyle)
-            ->generate($source, $destination);
-        $actual = $destination->fetch();
-        static::assertEquals($expected, $actual);
-    }
+    protected $reporterOutputExtension = 'txt';
 }

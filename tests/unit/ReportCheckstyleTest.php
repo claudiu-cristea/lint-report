@@ -1,9 +1,6 @@
 <?php
 
-use Cheppers\LintReport\ReportCheckstyle;
 use Cheppers\LintReport\Reporter\CheckstyleReporter;
-use Cheppers\LintReport\ReportWrapperInterface;
-use Symfony\Component\Console\Output\BufferedOutput;
 
 /**
  * Class TaskScssLintRunTest.
@@ -21,35 +18,17 @@ class ReportCheckstyleTest extends ReportTestBase
     /**
      * {@inheritdoc}
      */
-    protected $reporterOutputExtension = 'xml';
+    protected $reporterClass = CheckstyleReporter::class;
 
     /**
-     * @dataProvider casesGenerate
-     *
-     * @param ReportWrapperInterface $reportWrapper
-     * @param array $source
-     * @param string|null $filePathStyle
-     * @param string $expected
+     * {@inheritdoc}
      */
-    public function testGenerate(
-        ReportWrapperInterface $reportWrapper,
-        array $source,
-        $filePathStyle,
-        $expected
-    ) {
-        $reporter = new CheckstyleReporter();
-        $destination = new BufferedOutput();
-        $reporter
-            ->setReportWrapper($reportWrapper)
-            ->setBasePath('/foo')
-            ->setFilePathStyle($filePathStyle)
-            ->generate($source, $destination);
-        static::assertEquals($expected, $destination->fetch());
-    }
+    protected $reporterOutputExtension = 'xml';
 
     public function testSetFilePathStyle()
     {
-        $reporter = new CheckstyleReporter();
+        /** @var \Cheppers\LintReport\ReporterInterface $reporter */
+        $reporter = new $this->reporterClass();
         try {
             $reporter->setFilePathStyle('invalid');
             $this->fail('Expected exception is missing.');

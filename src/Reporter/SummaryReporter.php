@@ -19,7 +19,6 @@ class SummaryReporter extends BaseReporter
     protected function doIt()
     {
         $reportWrapper = $this->getReportWrapper();
-        $reportWrapper->setReport($this->source);
         if ($reportWrapper->highestSeverity() === ReportWrapperInterface::SEVERITY_OK) {
             return $this;
         }
@@ -33,12 +32,12 @@ class SummaryReporter extends BaseReporter
                 continue;
             }
 
-            $this->destination->writeln($this->highlightHeaderBySeverity(
+            $this->destinationOutput->writeln($this->highlightHeaderBySeverity(
                 $highestSeverity,
                 $this->normalizeFilePath($fileWrapper->filePath())
             ));
 
-            $table = new Table($this->destination);
+            $table = new Table($this->destinationOutput);
             $table->setHeaders([
                 'Source',
                 'Occurrences',
@@ -56,7 +55,7 @@ class SummaryReporter extends BaseReporter
             $table->render();
 
             if ($i !== $reportWrapper->countFiles() - 1) {
-                $this->destination->writeln('');
+                $this->destinationOutput->writeln('');
             }
 
             $i++;

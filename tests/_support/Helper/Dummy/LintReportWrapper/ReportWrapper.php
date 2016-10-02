@@ -1,13 +1,11 @@
 <?php
 
-namespace Cheppers\LintReport\Wrapper\ESLint;
+namespace Helper\Dummy\LintReportWrapper;
 
 use Cheppers\LintReport\ReportWrapperInterface;
 
 /**
  * Class ReportWrapper.
- *
- * @package Cheppers\LintReport\Wrapper\ESLint
  */
 class ReportWrapper implements ReportWrapperInterface
 {

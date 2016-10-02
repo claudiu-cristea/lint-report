@@ -1,8 +1,6 @@
 <?php
 
 use Cheppers\LintReport\Reporter\VerboseReporter;
-use Cheppers\LintReport\ReportWrapperInterface;
-use Symfony\Component\Console\Output\BufferedOutput;
 
 /**
  * Class TaskScssLintRunTest.
@@ -20,30 +18,10 @@ class ReportVerboseTest extends ReportTestBase
     /**
      * {@inheritdoc}
      */
-    protected $reporterOutputExtension = 'txt';
+    protected $reporterClass = VerboseReporter::class;
 
     /**
-     * @dataProvider casesGenerate
-     *
-     * @param ReportWrapperInterface $reportWrapper
-     * @param array $source
-     * @param string|null $filePathStyle
-     * @param string $expected
+     * {@inheritdoc}
      */
-    public function testGenerate(
-        ReportWrapperInterface $reportWrapper,
-        array $source,
-        $filePathStyle,
-        $expected
-    ) {
-        $reporter = new VerboseReporter();
-        $destination = new BufferedOutput();
-        $reporter
-            ->setReportWrapper($reportWrapper)
-            ->setBasePath('/foo')
-            ->setFilePathStyle($filePathStyle)
-            ->generate($source, $destination);
-        $actual = $destination->fetch();
-        static::assertEquals($expected, $actual);
-    }
+    protected $reporterOutputExtension = 'txt';
 }
